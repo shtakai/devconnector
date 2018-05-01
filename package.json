@@ -4,13 +4,16 @@
   "description": "Social network for developers",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "author": "Alyson T",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "dotenv": "^5.0.1",
+    "dotenv-safe": "^5.0.1",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.0.17",
@@ -26,6 +29,8 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
     "install": "^0.11.0",
+    "live-server": "^1.2.0",
+    "livereloadx": "^0.3.10",
     "nodemon": "^1.17.3",
     "npm": "^6.0.0"
   }
