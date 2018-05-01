@@ -2,12 +2,16 @@ require('dotenv-safe').config();
 
 const mongoose = require('mongoose');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // DB config
 const db = require('./config/keys').mongoURI;
