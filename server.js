@@ -3,6 +3,7 @@ require('dotenv-safe').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const users = require('./routes/api/users');
 const profile = require('./routes/api/profile');
@@ -22,7 +23,11 @@ mongoose
   .then(() => console.log('MondoDB Connected'))
   .catch(err => console.log(err));
 
-app.get('/', (req, res) => res.send('waHello'));
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport config
+require('./config/passport')(passport);
 
 // Use routes
 app.use('/api/users', users);
