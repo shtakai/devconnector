@@ -52,8 +52,49 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
   newPost.save().then(post => res.json(post));
 });
 
+// @route  POST api/posts/likq/:id
+// @desc   Like post
+// @access Private
+router.post('/like/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOne({ user: req.user.id })
+    .then((profile) => {
+      Post.findById(req.params.id)
+        .then((post) => {
+          if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
+            return res.status(400).json({ alreadyLiked: 'user already liketd this post' });
+          }
+
+          post.likes.unshift({ user: req.user.id });
+          post.save().then(_post => res.json(_post));
+        })
+        .catch(err => res.status(404).json({ postNotFound: 'no post found' }));
+    });
+});
+
+// @route  POST api/posts/unlike/:id
+// @desc   unike post
+// @access Private
+router.post('/unlike/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Profile.findOne({ user: req.user.id })
+    .then((profile) => {
+      Post.findById(req.params.id)
+        .then((post) => {
+          if (post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
+            return res.status(400).json({ notLiked: 'you have not yet liked this post' });
+          }
+
+          const removeIndex = post.likes
+            .map(item => item.toString())
+            .indexOf(req.user.id);
+
+          post.likes.splice(removeIndex, 1);
+          post.save().then(post => res.json(post));
+        })
+        .catch(err => res.status(404).json({ postNotFound: 'no post found' }));
+    });
+});
 // @route  DELETE api/posts/:id
-// @desc   Delete post by id
+// @desc   Delete post by idre
 // @access Private
 router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
   Profile.findOne({ user: req.user.id })
@@ -65,11 +106,8 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), (req, re
           }
           post.remove().then(() => res.json({ success: true }));
         })
-        .then(err => res.status(404).json({ postNotFound: 'no post found' }));
+        .catch(err => res.status(404).json({ postNotFound: 'no post found' }));
     });
-  Post.findById(req.params.id)
-    .then(post => res.json(post))
-    .catch(err => res.status(404).json({ noPostFound: 'no post found' }));
 });
 
 module.exports = router;
